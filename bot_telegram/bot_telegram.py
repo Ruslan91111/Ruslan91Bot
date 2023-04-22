@@ -7,6 +7,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from config import API_TOKEN
 from keyboard import keyboard_first_menu
 from get_by_api import get_the_weather_by_api
+import json
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -32,23 +33,24 @@ class AnswersFromUser(StatesGroup):
     additional_answer = State()
 
 
+# При выборе в меню пункта - "Узнать погоду"
 @dp.message_handler(commands=['Узнать_погоду'])
 async def check_the_weather(message: types.Message):
     await message.answer("Введите город, в котором вы хотели бы узнать погоду.")
     await AnswersFromUser.first_answer.set()
 
 
+# Работа с предоставлением погоды по городу.
 @dp.message_handler(state=AnswersFromUser.first_answer)
 async def get_the_weather(message: types.Message, state: FSMContext):
     await state.update_data(city=message.text)
+    # Определяем город, по которому ищем погоду.
+    city = await state.get_data('city')
+    # Отправляем город в функцию и получаем ответ.
+    weather_in_the_city = await get_the_weather_by_api(city['city'])
+    await message.answer(weather_in_the_city)
 
-    # Логика - запрашиваем погоду через API.
-    city = await state.get_data('city')  # убрать
 
-    # print(city['city'])  # убрать
-
-    # Отправляем город в функцию.
-    data =  await get_the_weather_by_api(city['city'])
 
 
 
