@@ -1,3 +1,5 @@
+import re
+
 import aiohttp
 import requests
 import json
@@ -9,9 +11,7 @@ async def get_the_weather_by_api(city: str) -> str:
     url = f"http://api.openweathermap.org/data/2.5/find?q={city.strip()}&type=like&APPID={API_WEATHER}&units=metric"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
-            response_text = await response.text()
-            # Преобразовываем в словарь.
-            weather_in_city = json.loads(response_text)
+            weather_in_city = await response.json()
 
             # Проверяем, что город был введен правильно. Если нет, то ['list'] пустой.
             if weather_in_city['list']:
@@ -28,3 +28,30 @@ async def get_the_weather_by_api(city: str) -> str:
             # Сообщение пользователю, если наименование города было введено неверно.
             else:
                 return 'Населенного пункта с указанным названием не найдено.'
+
+
+async def convert_by_api(currencies_and_sum_from_user: dict) -> str:
+    """ Запрашивает через API курс, считаем сумму в функции, возвращает готовый ответ в виде строки."""
+    # Формируем нужный url.
+    currency_from = re.sub(r"[^A-Z]", '', currencies_and_sum_from_user['currency_from'])
+    currency_to = re.sub(r"[^A-Z]", '', currencies_and_sum_from_user['currency_to'])
+    url = f"https://api.exchangerate.host/convert?from={currency_from}&to={currency_to}"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            response_information = await response.json()
+            # Извлекаем курс.
+            rate = float(response_information['info']['rate'])
+            # Сумма, введенная пользователем.
+            sum_from_user = float(currencies_and_sum_from_user['sum_of_currency'])
+            if sum_from_user > 0:
+                # Вычисление.
+                sum_after_convert = sum_from_user * rate
+                # Преобразование к двум цифрам после точки.
+                sum_after_convert = float('{:.2f}'.format(sum_after_convert))
+                return f"{sum_from_user} {currency_from} равняется {sum_after_convert} {currency_to}. " \
+                       f"Курс 1 {currency_from} = {rate} {currency_to}"
+            else:
+                return "Требуется вводить числа больше 0. Попробуйте еще раз."
+
+
