@@ -16,12 +16,11 @@ button_usd = KeyboardButton('$ USD')
 button_eur = KeyboardButton('€ EUR')
 button_rub = KeyboardButton('₽ RUB')
 button_cny = KeyboardButton('¥ CNY')
-button_another = KeyboardButton('Другая')
+
 
 # Клавиатура валют.
 keyboard_currency = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-keyboard_currency.add(button_usd).insert(button_eur).add(button_rub).insert(button_rub).\
-    add(button_cny).insert(button_another)
+keyboard_currency.add(button_usd).insert(button_eur).add(button_rub).insert(button_cny)
 
 
 

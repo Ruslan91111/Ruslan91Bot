@@ -7,7 +7,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from config import API_TOKEN
 from keyboard import keyboard_first_menu, keyboard_currency
-from get_by_api import get_the_weather_by_api
+from get_by_api import get_the_weather_by_api, convert_by_api
 import json
 
 # Configure logging
@@ -28,7 +28,7 @@ async def send_welcome(message: types.Message):
                          "выберите подходящий для Вас пункт.", reply_markup=keyboard_first_menu)
 
 
-# Класс состояний. Ответы на вопросы из меню.
+# Класс состояний. Ответы пользователя на вопросы.
 class AnswersFromUser(StatesGroup):
     name_of_city = State()
     name_of_currency_from = State()
@@ -58,26 +58,44 @@ async def get_the_weather(message: types.Message, state: FSMContext):
 
 # При выборе в меню пункта - "Конвертировать_валюту"
 @dp.message_handler(commands=['Конвертировать_валюту'])
-async def check_the_weather(message: types.Message):
-    await message.answer("Выберите валюту, которую хотите конвертировать.", reply_markup=keyboard_currency)
-    # await AnswersFromUser.name_of_city.set()
-    # await message.answer("Выберите валюту, в которую хотите конвертировать.", reply_markup=keyboard_currency)
-    # await AnswersFromUser.second_answer.set()
-    # await message.answer("Введите сумму", reply_markup=keyboard_currency)
-    # await AnswersFromUser.sum_of_currency_from_user.set()
+async def currency_from(message: types.Message):
+    await message.answer("Выберите валюту, которую хотите конвертировать.\nЕсли на клавиатуре "
+                         "нет желаемой валюты, введите название валюты самостоятельно",
+                         reply_markup=keyboard_currency)
+    await AnswersFromUser.name_of_currency_from.set()
 
 
-# # Работа по конвертации валюты.
-# @dp.message_handler(state=AnswersFromUser.first_answer)
-# async def get_the_weather(message: types.Message, state: FSMContext):
-#     await state.update_data(city=message.text)
-#
-#
-#     # Определяем город, по которому ищем погоду.
-#     city = await state.get_data('city')
-#     # Отправляем город в функцию и получаем готовую строку - ответ.
-#     weather_in_the_city = await get_the_weather_by_api(city['city'])
-#     await message.answer(weather_in_the_city)
+# Состояние первой валюты.
+@dp.message_handler(state=AnswersFromUser.name_of_currency_from)
+async def currency_from_state(message: types.Message, state: FSMContext):
+    await state.update_data(currency_from=message.text)
+    await message.answer("Отлично! Теперь введите валюту, в которую необходимо конвертировать.",
+                         reply_markup=keyboard_currency)
+    await AnswersFromUser.next()  # либо же AnswersFromUser.name_of_currency_to.set()
+
+
+# Состояние второй валюты.
+@dp.message_handler(state=AnswersFromUser.name_of_currency_to)
+async def get_address(message: types.Message, state: FSMContext):
+    await state.update_data(currency_to=message.text)
+    await message.answer("Отлично! Теперь введите сумму, которую вы хотите конвертировать.",)
+    await AnswersFromUser.next()  # либо же AnswersFromUser.sum_of_currency_from_user.set()
+
+
+# Состояние суммы валюты.
+@dp.message_handler(state=AnswersFromUser.sum_of_currency_from_user)
+async def get_address(message: types.Message, state: FSMContext):
+    await state.update_data(sum_of_currency=message.text)
+    await AnswersFromUser.next()  # либо же AnswersFromUser.sum_of_currency_from_user.set()
+    # Логика. Извлекаем данные из состояния
+    currencies_and_sum_from_user = await state.get_data()
+    # Вызываем функцию - идем к API.
+    answer_to_user = await convert_by_api(currencies_and_sum_from_user)
+    await message.answer(answer_to_user, reply_markup=keyboard_first_menu)
+    await state.finish()
+
+
+
 
 
 
