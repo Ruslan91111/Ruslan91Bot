@@ -3,6 +3,9 @@ import re
 import aiohttp
 import requests
 import json
+
+from aiogram import types
+
 from config import API_WEATHER
 
 
@@ -53,5 +56,17 @@ async def convert_by_api(currencies_and_sum_from_user: dict) -> str:
                        f"Курс 1 {currency_from} = {rate} {currency_to}"
             else:
                 return "Требуется вводить числа больше 0. Попробуйте еще раз."
+
+
+# Получить картинку с котиком
+async def get_the_cat() -> str:
+    """ Запрашивает по API адрес картинки с котиком, возвращает готовый url в виде строки."""
+    url = f"https://api.thecatapi.com/v1/images/search"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            response_information = await response.json()
+            return response_information[0]['url']
+
+
 
 

@@ -4,7 +4,7 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 # Кнопки, которые будут на клавиатуре в первом меню при обращении к боту.
 button_weather = KeyboardButton('/Узнать_погоду')
 button_converter = KeyboardButton('/Конвертировать_валюту')
-button_animals = KeyboardButton('/Поднять_настроение')
+button_animals = KeyboardButton('/Показать_милого_котенка')
 
 # Клавиатура - меню с выбором из вышеперечисленных кнопок.
 keyboard_first_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)

@@ -7,7 +7,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from config import API_TOKEN
 from keyboard import keyboard_first_menu, keyboard_currency
-from get_by_api import get_the_weather_by_api, convert_by_api
+from get_by_api import get_the_weather_by_api, convert_by_api, get_the_cat
 import json
 
 # Configure logging
@@ -95,16 +95,14 @@ async def get_address(message: types.Message, state: FSMContext):
     await state.finish()
 
 
+# При выборе в меню пункта - "Показать_милого_котенка"
+@dp.message_handler(commands=['Показать_милого_котенка'])
+async def show_the_cat(message: types.Message):
+    await message.answer(await get_the_cat())
 
 
 
 
-
-# @dp.message_handler()
-# async def echo(message: types.Message):
-#     # old style:
-#     # await bot.send_message(message.chat.id, message.text)
-#     await message.answer(message.text)
 
 
 if __name__ == '__main__':
