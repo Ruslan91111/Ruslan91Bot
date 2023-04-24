@@ -98,11 +98,7 @@ async def get_address(message: types.Message, state: FSMContext):
 # При выборе в меню пункта - "Показать_милого_котенка"
 @dp.message_handler(commands=['Показать_милого_котенка'])
 async def show_the_cat(message: types.Message):
-    await message.answer(await get_the_cat())
-
-
-
-
+    await bot.send_photo(message.from_user.id, await get_the_cat())
 
 
 if __name__ == '__main__':
