@@ -1,6 +1,5 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
-
 # Кнопки, которые будут на клавиатуре в первом меню при обращении к боту.
 button_weather = KeyboardButton('/Узнать_погоду')
 button_converter = KeyboardButton('/Конвертировать_валюту')
@@ -21,7 +20,4 @@ button_cny = KeyboardButton('¥ CNY')
 # Клавиатура валют.
 keyboard_currency = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 keyboard_currency.add(button_usd).insert(button_eur).add(button_rub).insert(button_cny)
-
-
-
 

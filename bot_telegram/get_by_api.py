@@ -1,11 +1,6 @@
+"""Три функции обращения к API для получения сведений о погоде, курса валют и случайной картинки с котиком. """
 import re
-
 import aiohttp
-import requests
-import json
-
-from aiogram import types
-
 from config import API_WEATHER
 
 
