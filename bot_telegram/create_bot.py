@@ -1,5 +1,5 @@
 """Промежуточный файл, в котором создаются объекты Bot и Dispatcher,
-  файл нужен, чтобы избежать кольцевания импортов, между bot_telegram.py и файлами с handlers. """
+  файл нужен, чтобы избежать кольцевания импортов, между bot.py и файлами с handlers. """
 from aiogram import Bot, Dispatcher
 import logging
 

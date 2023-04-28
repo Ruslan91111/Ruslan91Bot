@@ -18,7 +18,7 @@ from handlers.show_a_cat import register_handlers_show_a_cat
 
 # Приветствие, затем вывод первичного меню.
 @dp.message_handler(commands=['start', 'help'])
-async def send_welcome(message: types.Message):
+async def start_the_work(message: types.Message):
     """ В ответ на `/start` or `/help` поприветствовать пользователя, вывести главное меню. """
     # Если мой ID - "Создателя бота", то вывести дополнительную кнопку создать опрос.
     if message.from_user.id == ID:
