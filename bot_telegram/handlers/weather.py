@@ -15,7 +15,8 @@ class NameOfCityState(StatesGroup):
 
 # При выборе в меню пункта - "Узнать погоду", сохраняем первое состояние - название города.
 async def check_the_weather(message: types.Message):
-    await message.answer("Введите город, в котором вы хотели бы узнать погоду.")
+    await message.answer("Введите город, в котором вы хотели бы узнать погоду.\n"
+                         "Если передумали, введите команду 'Отмена'")
     await NameOfCityState.name_of_city.set()
 
 

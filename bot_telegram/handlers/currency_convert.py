@@ -21,8 +21,8 @@ class CurrencyStates(StatesGroup):
 # При выборе в меню пункта - "Конвертировать_валюту".
 async def currency_from(message: types.Message):
     await message.answer("Выберите валюту, которую хотите конвертировать.\nЕсли на клавиатуре "
-                         "нет желаемой валюты, введите название валюты самостоятельно",
-                         reply_markup=keyboard_currency)
+                         "нет желаемой валюты, введите название валюты самостоятельно\n"
+                         "Если передумали, введите команду 'Отмена'.", reply_markup=keyboard_currency)
     await CurrencyStates.name_of_currency_from.set()
 
 

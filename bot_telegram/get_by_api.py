@@ -10,7 +10,7 @@ async def get_the_weather_by_api(city: str) -> str:
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             weather_in_city = await response.json()
-
+            print(weather_in_city)
             # Проверяем, что город был введен правильно. Если нет, то ['list'] пустой.
             if weather_in_city['list']:
                 # Выбираем нужные нам значения, из которых сформируем возвращаемую строку.

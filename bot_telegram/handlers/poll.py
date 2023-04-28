@@ -30,7 +30,8 @@ class FSMAdmin(StatesGroup):
 async def start_make_poll(message: types.Message):
     if message.from_user.id == ID:
         await FSMAdmin.question.set()
-        await message.reply('Введите вопрос для опроса.')
+        await message.reply("Введите вопрос для опроса.\n"
+                         "Если передумали, введите команду 'Отмена'.")
 
 
 # Ловим вопрос и сохраняем в словарь.
