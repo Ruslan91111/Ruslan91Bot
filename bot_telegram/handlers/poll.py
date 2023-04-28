@@ -4,8 +4,6 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 
 from config import ID
 from create_bot import dp, bot
-from get_by_api import convert_by_api
-from keyboard import keyboard_currency, keyboard_first_menu
 
 
 # Класс состояний. Пункты из основного меню.
