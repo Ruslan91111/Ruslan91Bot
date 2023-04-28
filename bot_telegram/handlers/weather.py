@@ -1,9 +1,12 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
+from aiogram.dispatcher.filters import Text
 
 from create_bot import dp
 from get_by_api import get_the_weather_by_api
+
+from keyboard import keyboard_first_menu
 
 
 class NameOfCityState(StatesGroup):
@@ -14,6 +17,17 @@ class NameOfCityState(StatesGroup):
 async def check_the_weather(message: types.Message):
     await message.answer("Введите город, в котором вы хотели бы узнать погоду.")
     await NameOfCityState.name_of_city.set()
+
+
+# Выход из машины состояний.
+@dp.message_handler(commands="отмена", state="*", )
+@dp.message_handler(Text(equals='отмена', ignore_case=True), state="*")
+async def cancel_handler(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        return
+    await state.finish()
+    await message.reply('Отменено.', reply_markup=keyboard_first_menu)
 
 
 # Работа с предоставлением погоды по городу.

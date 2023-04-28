@@ -1,9 +1,12 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
+from aiogram.dispatcher.filters import Text
 
 from config import ID
 from create_bot import dp, bot
+
+from keyboard import keyboard_first_menu
 
 
 # Класс состояний. Пункты из основного меню.
@@ -80,6 +83,17 @@ async def save_the_variant4(message: types.Message, state: FSMContext):
                                 options=[poll['variant1'], poll['variant2'], poll['variant3'], poll['variant4']])
 
     await state.finish()
+
+
+# Выход из машины состояний.
+@dp.message_handler(commands="отмена", state="*", )
+@dp.message_handler(Text(equals='отмена', ignore_case=True), state="*")
+async def cancel_handler(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        return
+    await state.finish()
+    await message.reply('Отменено.', reply_markup=keyboard_first_menu)
 
 
 def register_handlers_poll(dp: Dispatcher):

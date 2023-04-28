@@ -1,6 +1,7 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
+from aiogram.dispatcher.filters import Text
 
 from create_bot import dp
 from get_by_api import convert_by_api
@@ -51,6 +52,17 @@ async def currency_to_state(message: types.Message, state: FSMContext):
     await message.answer(answer_to_user, reply_markup=keyboard_first_menu)
     # Завершили состояние.
     await state.finish()
+
+
+# Выход из машины состояний.
+@dp.message_handler(commands="отмена", state="*", )
+@dp.message_handler(Text(equals='отмена', ignore_case=True), state="*")
+async def cancel_handler(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        return
+    await state.finish()
+    await message.reply('Отменено.', reply_markup=keyboard_first_menu)
 
 
 def register_handlers_currency_convert(dp: Dispatcher):
